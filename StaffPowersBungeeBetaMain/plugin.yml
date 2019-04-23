@@ -1,0 +1,8 @@
+name: StaffPowersSpigot
+version: 1.0
+main: me.Devee1111.Spigot.StaffPowersSpigotMain
+author: Devee1111
+commands:
+  testspigot:
+    description: This is just a little test to see if it's active.
+    

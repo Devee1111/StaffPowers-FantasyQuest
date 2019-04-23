@@ -1,0 +1,35 @@
+#Do not touch this
+version: 1.1
+options:
+  #The prefix that will be shown throughout the plugin, and in the %prefix% placeholders
+  prefix: "&8[&dStaffPowers&8]"
+  #Settings for when player is in staff godmode
+  god:
+    #What we disable for gods
+    disableDamage: true
+    disableHunger: true
+    disableDeath: true
+    #Do we display message when played died?
+    messageGod: true
+    #Do we send a server wide message when the player dies?
+    messageEveryone: false
+    #Do we message the killer?
+    messageKiller: true
+    #Message to the goded player when they die
+    messageToGod: "%prefix% &cYour power keeps you alive, but at what cost?"
+    #Message sent to all players on the server
+    messageToEveryone: "&d%player% refuses to fall..."
+    #If the killer was a player, send this message
+    messageToAttacker: "&cDid you really think you could slay a god %player%...? You...?"
+    
+messages:
+  #Displayed when made an operator with /opme. Placeholders: %prefix%
+  madeOp: "%prefix% &aYou've been made a server operator."
+  #Displayed when a player is made a god with /godme
+  madeGod: "%prefix% &dImmortality &aenabled&d."
+  #Displayed when player has disabled god
+  madeMortal: "%prefix% &dImmortality &cdisabled&d."
+  #Displayed when user is already an operator. Placeholders: %prefix%
+  alreadyOp: "%prefix% &cYou are already an operator."
+  #This is always be displayed when a user is denied permission spigotside. Placeholders: %prefix%
+  nopermission: '&cYou do not have permission to do this.'

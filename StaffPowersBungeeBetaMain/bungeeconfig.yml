@@ -1,0 +1,35 @@
+#Do not touch this, ever.
+version: 1.1
+options:
+  #Prefix shown throughout plugin and the %prefix% placeholder
+  prefix: '&8[&dStaffPowers&8]'
+  #How we handle staff joining/leaving the network
+  onjoinleave:
+    enabled:
+      #Do we display messages on their entry/departure?
+      join: true
+      leave: true
+    messages:
+      #If enabled, this message is sent
+      join: '&8[&a+&8] (&cStaff&8) &d%player% &ehas joined the network.'
+      leave: '&8[&c-&8] (&cStaff&8) &d%player% &eleft the network.'
+#How we process the /opme command
+MakeOp:
+  #Currently there is no way to check if our jar is in the spigot server, so we display a message letting them know we tried if enabled
+  sendMessageOnAttempt: true
+  message: '%prefix% &aAttempting to make operator...'
+#How we process /godme command
+MakeGod:
+  sendMessageOnAttempt: false
+  message: '%prefix% &aAttempting to apply god mode.'
+#Messages that will be used throughout the plugin, never delete a path, only modify!
+#If a path is accidently deleted you can either restart the server or delete the configuration and then restart, however
+#Deleting it will COMPLETLY reset the configuration.
+messages:
+  #Shown for just about anything a user doesn't have permission for.
+  nopermission: '%prefix% &cYou do not have permission to do this.'
+  #Sent when a non player sends a play only command
+  playersonly: '%prefix% &cOnly players can send this command.'
+  #Sent when the configuration has been reloaded.
+  reloadedConfig: '%prefix% &aYou have reloaded the bungee staffpowers configuration!'
+  
