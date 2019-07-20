@@ -6,11 +6,11 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
 
-public class StaffPowersBungeeCommandTest extends Command {
+public class StaffPowersCmdTest extends Command {
 
-	private StaffPowersBungeeMain inst = StaffPowersBungeeMain.getInstance();
+	private StaffPowers inst = StaffPowers.getInstance();
 	
-	public StaffPowersBungeeCommandTest() {
+	public StaffPowersCmdTest() {
 		super("testbungee");
 	}
 	

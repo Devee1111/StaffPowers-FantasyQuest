@@ -5,13 +5,13 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-public class StaffPowersBungeeCommandOp extends Command {
+public class StaffPowersCmdOp extends Command {
 	
-	public StaffPowersBungeeCommandOp() {
+	public StaffPowersCmdOp() {
 		super("opme");
 	}
 	
-	private StaffPowersBungeeMain inst = StaffPowersBungeeMain.getInstance();
+	private StaffPowers inst = StaffPowers.getInstance();
 	
 	@Override
 	public void execute(CommandSender sender, String[] args) {

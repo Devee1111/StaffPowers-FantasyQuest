@@ -3,11 +3,11 @@ package me.Devee1111.Bungee;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 
-public class StaffPowersBungeeCommandReload extends Command {
+public class StaffPowersCmdReload extends Command {
 
-	private StaffPowersBungeeMain inst = StaffPowersBungeeMain.getInstance();
+	private StaffPowers inst = StaffPowers.getInstance();
 	
-	public StaffPowersBungeeCommandReload() {
+	public StaffPowersCmdReload() {
 		super("staffreloadbungee");
 	}
 	

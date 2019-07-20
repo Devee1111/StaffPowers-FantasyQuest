@@ -2,7 +2,7 @@
 version: 1.1
 options:
   #Prefix shown throughout plugin and the %prefix% placeholder
-  prefix: '&8[&dStaffPowers&8]'
+  prefix: '&8[&dStaff&8]'
   #How we handle staff joining/leaving the network
   onjoinleave:
     enabled:
@@ -32,4 +32,6 @@ messages:
   playersonly: '%prefix% &cOnly players can send this command.'
   #Sent when the configuration has been reloaded.
   reloadedConfig: '%prefix% &aYou have reloaded the bungee staffpowers configuration!'
+  #Displayed when the wrong arguments are given for a command
+  wrongargs: '%prefix% &cError! Wrong arguements given!'
   

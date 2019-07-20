@@ -9,13 +9,13 @@ import net.md_5.bungee.api.event.ServerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class StaffPowersBungeeListener  implements Listener {
+public class StaffPowersListener  implements Listener {
 	
 	/*
 	 * This class has yet to be redone after the rework on the code, however it should still work fine.
 	 */
 	
-	private StaffPowersBungeeMain inst = StaffPowersBungeeMain.getInstance();
+	private StaffPowers inst = StaffPowers.getInstance();
 	
 	@EventHandler
 	public void onPlayerJoin(ServerConnectEvent e) {

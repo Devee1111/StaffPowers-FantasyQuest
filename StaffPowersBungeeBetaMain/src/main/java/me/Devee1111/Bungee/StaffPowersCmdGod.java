@@ -5,11 +5,11 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-public class StaffPowersBungeeCommandGod extends Command {
+public class StaffPowersCmdGod extends Command {
 
-	private StaffPowersBungeeMain inst = StaffPowersBungeeMain.getInstance();
+	private StaffPowers inst = StaffPowers.getInstance();
 	
-	public StaffPowersBungeeCommandGod() {
+	public StaffPowersCmdGod() {
 		super("godme");
 	}
 	
