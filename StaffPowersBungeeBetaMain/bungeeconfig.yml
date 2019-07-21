@@ -13,6 +13,22 @@ options:
       #If enabled, this message is sent
       join: '&8[&a+&8] (&cStaff&8) &d%player% &ehas joined the network.'
       leave: '&8[&c-&8] (&cStaff&8) &d%player% &eleft the network.'
+#Section is committed to staff chats
+chat:
+  format:
+    staff: '&8(&cStaff&8) %f%player% &7» &e'
+    admin: '&8(&bAdmin&8) &f%player% &7» &e'
+  messages:
+    toggled-on:
+      staff: '%prefix% &3Staff chat &aenabled&c.'
+      admin: '%prefix% &3Admin chat &aenabled&c.'
+    toggled-off:
+      staff: '%prefix% &3Staff chat &cdisabled&3.'
+      admin: '%prefix% &3Admin chat &cdisabled&3.'
+    playersonly: '%prefix% &cOnly players can toggle chat.'
+    nopermtoggle: '%prefix% &cYou do not have permission to toggle the staff chat.'
+    
+    
 #How we process the /opme command
 MakeOp:
   #Currently there is no way to check if our jar is in the spigot server, so we display a message letting them know we tried if enabled

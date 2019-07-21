@@ -4,6 +4,7 @@ package me.Devee1111.Bungee;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -24,6 +25,8 @@ public class StaffPowers extends Plugin {
 	public Configuration config;
 	private double version;
 	private double curver;
+	//Storing data for other classes
+	HashMap<String, String> chat = new HashMap<String, String>();
 	
 	@Override
 	public void onEnable() {
@@ -36,6 +39,9 @@ public class StaffPowers extends Plugin {
 		//Alerting that we're still under beta
 		alertDevelopment();
 		
+		//Clearing our data on plugin startup
+		chat.clear();
+		
 		//registering a plugin channel for messaging our spigot plugins
 		getProxy().registerChannel("staff:powers");
 		
@@ -45,9 +51,13 @@ public class StaffPowers extends Plugin {
 		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdReload());
 		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdGod());
 		//Newly created (no redo should be needed)
+		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdSc());
+		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdAc());
 		
 		//Creating our Listener TODO this listener needs to be redone
 		getProxy().getPluginManager().registerListener(this, new StaffPowersListener());
+		//Listeners past this point are up to date
+		getProxy().getPluginManager().registerListener(this, new StaffPowersChat());
 		
 	}
 	
@@ -69,11 +79,89 @@ public class StaffPowers extends Plugin {
 		newDefault("messages.wrongargs","%prefix% &cError! Wrong arguements given!");
 		newDefault("MakeGod.sendMessageOnAttempt",false);
 		newDefault("MakeGod.message","%prefix% &aAttempting to apply god mode.");
-		//New values go here to add to yml
+		//Chat section
+		newDefault("chat.format.staff","&8(&cStaff&8) %f%player% &7» &e");
+		newDefault("chat.format.admin","&8(&bAdmin&8) &f%player% &7» &e");
+		newDefault("chat.messages.toggled-on.staff","%prefix% &3Staff chat &aenabled&c.");
+		newDefault("chat.messages.toggled-on.admin","%prefix% &3Admin chat &aenabled&c.");
+		newDefault("chat.messages.toggled-off.staff","%prefix% &3Staff chat &cdisabled&3.");
+		newDefault("chat.messages.toggled-off.admin","%prefix% &3Admin chat &cdisabled&3.");
+		newDefault("chat.messages.playersonly","%prefix% &cOnly players can toggle chat.");
+		newDefault("chat.messages.nopermtoggle","%prefix% &cYou do not have permission to toggle the staff chat.");
+		//new yml changes go here
 	}
 	
 	/*
-	 * Section dedicated to making the config easier to use
+	 * SECTION: Staff chat <Data>
+	 * CREATED BY - Devee1111 on 7/20/19
+	 * DETAILS:
+	 * - Channels: general, admin
+	 * - Permisssions are in classes
+	 */
+	//chanels
+	String general = "general";
+	String admin = "admin";
+	
+	public HashMap<String, String> getChatData() {
+		return chat;
+	}
+	
+	public String getChannel(ProxiedPlayer pp) {
+		String channel = null; 
+		String uuid = pp.getUniqueId().toString();
+		if(chat.containsKey(uuid)) {
+			channel = chat.get(uuid);
+		}
+		return channel;
+	}
+	
+	public boolean isToggled(ProxiedPlayer pp) {
+		boolean toggled = false;
+		String uuid = pp.getUniqueId().toString();
+		if(chat.containsKey(uuid)) {
+			toggled = true;
+		}
+		return toggled;
+		
+	}
+	
+	public void setToggled(String channel, ProxiedPlayer pp) {
+		String uuid = pp.getUniqueId().toString();
+		String path = "chat.messages.toggled-on.";
+		if(channel.equals(general)) {
+			path = path + "staff";
+		} else {
+			path = path + "admin";
+		}
+		String alert = getString(path);
+		alert = prefix(alert);
+		TextComponent tosend = new TextComponent(color(alert));
+		pp.sendMessage(tosend);
+		chat.put(uuid, channel);
+	}
+	
+	public void unToggle(ProxiedPlayer pp) {
+		String uuid = pp.getUniqueId().toString();
+		String path = "chat.messages.toggled-off.";
+		String channel = chat.get(uuid);
+		if(channel.equals(general)) {
+			path = path + "staff";
+		} else {
+			path = path + "admin";
+		}
+		String alert = getString(path);
+		alert = prefix(alert);
+		TextComponent tosend = new TextComponent(color(alert));
+		pp.sendMessage(tosend);
+		chat.remove(uuid);
+	}
+	
+	
+	
+	
+	/*
+	 * SECTION: configAid
+	 * Created - Devee1111 7/19/20
 	 */
 	public boolean getBoolean(String path) {
 		boolean tosend = false;
@@ -102,7 +190,7 @@ public class StaffPowers extends Plugin {
 		getLogger().log(Level.SEVERE,"#          ERROR REPORT          #");
 		getLogger().log(Level.SEVERE,"#                                #");
 		getLogger().log(Level.SEVERE,"#          > Details <           #");
-		getLogger().log(Level.SEVERE,"# -> PATH DOES NOT EXIST         #");
+		getLogger().log(Level.SEVERE,"#-> PATH DOES NOT EXIST          #");
 		getLogger().log(Level.SEVERE,"#          > Section <           #");
 		getLogger().log(Level.SEVERE,"#-> configAid."+method+"()");
 		getLogger().log(Level.SEVERE,"#           > Path <             #");
@@ -112,7 +200,6 @@ public class StaffPowers extends Plugin {
 	
 	//Saves the config to disk
 	public void saveConfig() {
-		//Now saving it
 		try {
 			ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, new File(getDataFolder().getAbsolutePath(), "config.yml"));
 		} catch(IOException ex) {
@@ -155,11 +242,12 @@ public class StaffPowers extends Plugin {
 		return message;
 	}
 	
-	public String nopermission() {
+	public TextComponent nopermission() {
 		String tosend = config.getString("messages.nopermission");
 		tosend = tosend.replace("%prefix%", config.getString("options.prefix"));
 		tosend = ChatColor.translateAlternateColorCodes('&', tosend);
-		return tosend;
+		TextComponent mes = new TextComponent(tosend);
+		return mes;
 	}
 	
 	public String playersonly() {
@@ -198,6 +286,7 @@ public class StaffPowers extends Plugin {
 	 * General help/work methods, used by other classes that need the main class
 	 */
 	
+	
 	public void sendPluginCommand(ProxiedPlayer p, String data) {
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF(data);
@@ -207,6 +296,11 @@ public class StaffPowers extends Plugin {
 	
 	public void log(String message) {
 		getLogger().log(Level.WARNING, message);
+	}
+	
+	public void logChat(String tosend) {
+		getLogger().log(Level.INFO,tosend);
+		//TODO [Later] - Have it save staff chat to a local txt file
 	}
 	
 	/*
