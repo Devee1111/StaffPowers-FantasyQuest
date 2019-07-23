@@ -15,7 +15,8 @@ public class StaffPowersPluginMessageListener  implements PluginMessageListener 
 	
 	/*
 	 * Created by - Devee1111 on 9/22/19
-	 * TODO Add deop command
+	 * TODO make plugin messages use UUID
+	 * TODO make messages use message aid methods instead
 	 */
 
 	private StaffPowers inst = StaffPowers.getInstance();
@@ -36,11 +37,23 @@ public class StaffPowersPluginMessageListener  implements PluginMessageListener 
 			String playerName = input.readUTF();
 			for(Player online : Bukkit.getOnlinePlayers()) {
 				if(online.getName().equals(playerName)) {
-					makeOp(online);
+					op(online);
 					break;
 				}
 			}
 		}
+		
+		//TODO check for online player better
+		if(subchannel.equals("CommandDeop")) {
+			String playerName = input.readUTF();
+			for(Player online : Bukkit.getOnlinePlayers()) {
+				if(online.getName().equals(playerName)) {
+					deop(online);
+					break;
+				}
+			}
+		}
+		
 		//TODO check for online player better
 		if(subchannel.equals("CommandGod")) {
 			String playerName = input.readUTF();
@@ -62,16 +75,29 @@ public class StaffPowersPluginMessageListener  implements PluginMessageListener 
 			inst.setGod(p, false);
 		} else {
 			inst.setGod(p, true);
+			p.setSaturation(30);
+			p.setHealth(p.getHealthScale());
+			p.setFireTicks(0);
+			//TODO remove harmful effects
 		}
 	}
 	
-	//TODO change out the message sends to use main classes message aid
-	public void makeOp(Player p) {
+	//TODO alert console of player opping/deopping
+	public void op(Player p) {
 		if(p.isOp() == true) {
 			inst.sendMessage(p, "alreadyOp");
 		} else {
 			p.setOp(true);
 			inst.sendMessage(p, "madeOp");
+		}
+	}
+	
+	public void deop(Player p) {
+		if(p.isOp() == false) {
+			inst.sendMessage(p, "alreadyDeop");
+		} else {
+			p.setOp(false);
+			inst.sendMessage(p, "madeDeop");
 		}
 	}
 	

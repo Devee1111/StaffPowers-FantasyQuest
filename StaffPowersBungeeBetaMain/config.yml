@@ -12,7 +12,7 @@ options:
     #Do we display message when played died?
     messageGod: true
     #Do we send a server wide message when the player dies?
-    messageEveryone: false
+    messageEveryone: true
     #Do we message the killer?
     messageKiller: true
     #Message to the goded player when they die
@@ -25,6 +25,10 @@ options:
 messages:
   #Displayed when made an operator with /opme. Placeholders: %prefix%
   madeOp: "%prefix% &aYou've been made a server operator."
+  #Displayed when /deopme is ran and they've been deopped
+  madeDeop: "%prefix% &aYou are no longer a server operator."
+  #Displayed when /deopme is ran, and they're not op
+  alreadyDeop: "%prefix% &cYou are not a server operator."
   #Displayed when a player is made a god with /godme
   madeGod: "%prefix% &dImmortality &aenabled&d."
   #Displayed when player has disabled god

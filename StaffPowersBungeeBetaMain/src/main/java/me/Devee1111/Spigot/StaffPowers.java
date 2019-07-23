@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -21,7 +22,7 @@ public class StaffPowers extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		//TODO - Redo the config function
+		//TODO - Redo the config function, Version detection from default
 		saveDefaultConfig();
 		config = getConfig();
 		if(config.getDouble("version") != 1.1) {
@@ -32,9 +33,11 @@ public class StaffPowers extends JavaPlugin {
 		setInstance(this);
 		
 		//Creating our Listener Class
-		new StaffPowersLsnGod(this);
+		PluginManager pm = getServer().getPluginManager();
+		pm.registerEvents(new StaffPowersLsnGod(this), this);
 		
 		//TODO Clear out data on restart
+		dataGod.clear();
 		
 		//This is were we're setting up channels so that we can do stuffy stuffs that annoy the piss outta me
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

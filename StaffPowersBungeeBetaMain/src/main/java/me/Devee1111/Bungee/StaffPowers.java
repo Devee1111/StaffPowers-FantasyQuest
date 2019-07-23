@@ -49,6 +49,7 @@ public class StaffPowers extends Plugin {
 		
 		//Creating our command executers TODO this section needs to be recoded
 		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdOp());
+		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdDeop());
 		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdTest());
 		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdReload());
 		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdGod());
