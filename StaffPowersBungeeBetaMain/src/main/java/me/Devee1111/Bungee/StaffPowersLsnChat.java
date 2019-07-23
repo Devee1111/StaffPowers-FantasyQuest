@@ -11,7 +11,7 @@ import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class StaffPowersChat implements Listener {
+public class StaffPowersLsnChat implements Listener {
 	
 	private StaffPowers inst = StaffPowers.getInstance();
 	
@@ -27,6 +27,7 @@ public class StaffPowersChat implements Listener {
 		if(e.getSender() instanceof ProxiedPlayer) {
 			ProxiedPlayer pp = (ProxiedPlayer) e.getSender();
 			if(inst.isToggled(pp)) {
+				e.setCancelled(true);
 				String channel = inst.getChannel(pp);
 				String permission = "staff.chat."+channel;
 				String formatpath = getFormatPath(channel);

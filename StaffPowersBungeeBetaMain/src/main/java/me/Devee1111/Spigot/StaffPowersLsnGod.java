@@ -11,12 +11,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
-public class StaffPowersSpigotListener implements Listener {
+public class StaffPowersLsnGod implements Listener {
 	
-	StaffPowersSpigotMain inst;
-	private StaffPowersSpigotMain main = StaffPowersSpigotMain.getInstance();
-	
-	public StaffPowersSpigotListener(StaffPowersSpigotMain p) {
+	/*
+	 * Created by - Devee1111 on ?
+	 * TODO Redo class messages
+	 */
+	StaffPowers inst;
+	public StaffPowersLsnGod(StaffPowers p) {
 		this.inst = p;
 	}
 
@@ -24,7 +26,7 @@ public class StaffPowersSpigotListener implements Listener {
 	@EventHandler
 	public void onHunger(FoodLevelChangeEvent e) {
 		if(e.getEntity() instanceof Player) {
-			if(main.config.getBoolean("god.disableHunger") == true) {
+			if(inst.config.getBoolean("god.disableHunger") == true) {
 				Player p = (Player) e.getEntity();
 				if(isGod(p)) {
 					e.setCancelled(true);
@@ -36,7 +38,7 @@ public class StaffPowersSpigotListener implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
 		if(e.getEntity() instanceof Player) {
-			if(main.config.getBoolean("god.disableDamage") == true) {
+			if(inst.config.getBoolean("god.disableDamage") == true) {
 				Player p = (Player) e.getEntity();
 				if(isGod(p) == true) {
 					e.setCancelled(true);
@@ -48,25 +50,26 @@ public class StaffPowersSpigotListener implements Listener {
 	@EventHandler
 	public void onDeath(EntityDeathEvent e) {
 		if(e.getEntity() instanceof Player) {
-			if(main.config.getBoolean("god.disableDeath") == true) {
+			if(inst.config.getBoolean("god.disableDeath") == true) {
 				Player p = (Player) e.getEntity();
 				if(isGod(p) == true) {
 					p.setHealth(p.getHealthScale());
 					p.setFoodLevel(20);
 					p.setFireTicks(0);
-					if(main.config.getBoolean("god.messageGod") == true) {
-						main.sendMessage(p, "god.messageToGod");
+					//TODO Remove harmful effects
+					if(inst.config.getBoolean("god.messageGod") == true) {
+						inst.sendMessage(p, "god.messageToGod");
 					}
 					if(e.getEntity().getLastDamageCause().getEntity() instanceof Player) {
-						if(main.config.getBoolean("god.messageAttacker") == true) {
+						if(inst.config.getBoolean("god.messageAttacker") == true) {
 							Player attacker = (Player) e.getEntity().getLastDamageCause().getEntity();
-							main.sendMessage(attacker, "god.messageToAttacker");
+							inst.sendMessage(attacker, "god.messageToAttacker");
 						}
 					}
-					if(main.config.getBoolean("god.messageEveryone") == true) {
-						String tosend = main.createMessage("god.messageToEveryone");
+					if(inst.config.getBoolean("god.messageEveryone") == true) {
+						String tosend = inst.createMessage("god.messageToEveryone");
 						tosend = tosend.replace("%player%", p.getName());
-						tosend = main.color(tosend);
+						tosend = inst.color(tosend);
 						for(Player online : Bukkit.getOnlinePlayers()) {
 							online.sendMessage(tosend);
 						}
@@ -76,15 +79,11 @@ public class StaffPowersSpigotListener implements Listener {
 		}
 	}
 	
-	@SuppressWarnings("unlikely-arg-type")
+	
 	private boolean isGod(Player p) {
-		HashMap<String, String[]> data = main.getData();
-		for(Entry<String, String[]> en : data.entrySet()) {
-			if(en.getKey().equals("god")) {
-				if(en.getValue().equals(p.getUniqueId().toString())) {
-					return true;
-				}
-			}
+		HashMap<String, String> data = inst.getGodData();
+		if(data.containsKey(p.getUniqueId().toString())) {
+			return true;
 		}
 		return false;
 	}

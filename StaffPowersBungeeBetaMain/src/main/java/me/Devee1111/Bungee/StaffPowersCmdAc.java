@@ -61,7 +61,7 @@ public class StaffPowersCmdAc extends Command {
 		//Remove space from the end of the message
 		message = message.substring(0, message.length() - 1);
 		//formatting the message
-		String format = inst.getString("chat.format.staff");
+		String format = inst.getString("chat.format.admin");
 		format = inst.prefix(format);
 		format = format.replace("%player%", sender.getName());
 		format = format+message;

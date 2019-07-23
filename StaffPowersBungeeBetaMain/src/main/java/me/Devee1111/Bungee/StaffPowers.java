@@ -2,8 +2,10 @@ package me.Devee1111.Bungee;
 
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -57,7 +59,7 @@ public class StaffPowers extends Plugin {
 		//Creating our Listener TODO this listener needs to be redone
 		getProxy().getPluginManager().registerListener(this, new StaffPowersListener());
 		//Listeners past this point are up to date
-		getProxy().getPluginManager().registerListener(this, new StaffPowersChat());
+		getProxy().getPluginManager().registerListener(this, new StaffPowersLsnChat());
 		
 	}
 	
@@ -80,7 +82,7 @@ public class StaffPowers extends Plugin {
 		newDefault("MakeGod.sendMessageOnAttempt",false);
 		newDefault("MakeGod.message","%prefix% &aAttempting to apply god mode.");
 		//Chat section
-		newDefault("chat.format.staff","&8(&cStaff&8) %f%player% &7» &e");
+		newDefault("chat.format.staff","&8(&cStaff&8) &f%player% &7» &e");
 		newDefault("chat.format.admin","&8(&bAdmin&8) &f%player% &7» &e");
 		newDefault("chat.messages.toggled-on.staff","%prefix% &3Staff chat &aenabled&c.");
 		newDefault("chat.messages.toggled-on.admin","%prefix% &3Admin chat &aenabled&c.");
@@ -107,7 +109,7 @@ public class StaffPowers extends Plugin {
 	}
 	
 	public String getChannel(ProxiedPlayer pp) {
-		String channel = null; 
+		String channel = ""; 
 		String uuid = pp.getUniqueId().toString();
 		if(chat.containsKey(uuid)) {
 			channel = chat.get(uuid);
@@ -337,14 +339,15 @@ public class StaffPowers extends Plugin {
 		File configFile = new File(getDataFolder().getAbsolutePath(), "config.yml");
 		if(!configFile.exists()) {
 			try {
-				File defaultFile = new File(getClass().getResource("bungeeconfig.yml").getPath());
-				defaultFile.createNewFile();
+				InputStream def = getResourceAsStream("bungeeconfig.yml");
+				//File defaultFile = new File(getClass().getResource("bungeeconfig.yml").getPath());
+				OutputStream out = new FileOutputStream(configFile);
+				ByteStreams.copy(def, out);
+				//defaultFile.createNewFile();
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
 		}
-		//Creating a default configuraiton if we're not saving a new .yml (Already existed)
-		loadDefaultConfig();
 		//loading our configuration
 		try {
 			config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder().getAbsolutePath(), "config.yml"));
@@ -357,11 +360,13 @@ public class StaffPowers extends Plugin {
 			getLogger().log(Level.SEVERE,"################################");
 			e.printStackTrace();
 		}
+		//Creating a default configuraiton if we're not saving a new .yml (Already existed)
+		loadDefaultConfig();
 	}
 	//Used to create our default config, for simplicy we use some recreated spigot methods
 	public void loadDefaultConfig() {
 		if(config.contains("version")) {
-			version = config.getInt("version");
+			version = config.getDouble("version");
 		} else {
 			getLogger().log(Level.WARNING,"Failed to detect config version, resetting.");
 			/*

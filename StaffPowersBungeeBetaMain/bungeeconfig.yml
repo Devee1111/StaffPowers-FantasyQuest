@@ -16,7 +16,7 @@ options:
 #Section is committed to staff chats
 chat:
   format:
-    staff: '&8(&cStaff&8) %f%player% &7» &e'
+    staff: '&8(&cStaff&8) &f%player% &7» &e'
     admin: '&8(&bAdmin&8) &f%player% &7» &e'
   messages:
     toggled-on:
