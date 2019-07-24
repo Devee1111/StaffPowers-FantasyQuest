@@ -24,7 +24,7 @@ public class StaffPowersCmdAc extends Command {
 	private StaffPowers inst = StaffPowers.getInstance();
 	
 	public StaffPowersCmdAc() {
-		super("ac");
+		super("ac", "", "a");
 	}
 	
 	@Override
