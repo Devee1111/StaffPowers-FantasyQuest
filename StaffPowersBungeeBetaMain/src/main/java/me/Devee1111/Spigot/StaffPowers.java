@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -29,8 +27,11 @@ public class StaffPowers extends JavaPlugin {
 			saveResource("config.yml", true);
 		}
 		
-		//Creating an instance, so that the config can be loaded easily && isntance can be passed easier
+		//Creating our instance
 		setInstance(this);
+		
+		//Creating our Command classes
+		getCommand("testspigot").setExecutor(new StaffCmdTest(this));;
 		
 		//Creating our Listener Class
 		PluginManager pm = getServer().getPluginManager();
@@ -39,7 +40,7 @@ public class StaffPowers extends JavaPlugin {
 		//TODO Clear out data on restart
 		dataGod.clear();
 		
-		//This is were we're setting up channels so that we can do stuffy stuffs that annoy the piss outta me
+		//Setting up plugin messenger 
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "staff:powers");
 		this.getServer().getMessenger().registerIncomingPluginChannel(this, "staff:powers", new StaffPowersPluginMessageListener());
@@ -131,7 +132,7 @@ public class StaffPowers extends JavaPlugin {
 	
 	public void sendSMessage(Player p, String path) {
 		if(!config.contains(path)) {
-			error("crateMessage",path);
+			error("createMessage",path);
 			p.sendMessage(path);
 			return;
 		}
@@ -185,22 +186,4 @@ public class StaffPowers extends JavaPlugin {
 	public static StaffPowers getInstance() {
 		return instance;
 	}
-	
-	/*
-	 * SECTION - Core command
-	 * Created by - Devee1111 on ?
-	 */
-	
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(cmd.getName().equalsIgnoreCase("testspigot")) {
-			if(sender.hasPermission("staff.power.testspigot")) {
-				sender.sendMessage(ChatColor.GREEN+"Spigot is active!");
-				return true;
-			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission to run this command");
-			}
-		}
-		return false;
-	}
-
 }
