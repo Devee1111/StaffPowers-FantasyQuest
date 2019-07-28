@@ -41,6 +41,9 @@ public class StaffPowers extends Plugin {
 		//Alerting that we're still under beta
 		alertDevelopment();
 		
+		//Setting up our SQL data
+		StaffSql.loadSqlFile();
+		
 		//Clearing our data on plugin startup
 		chat.clear();
 		
@@ -70,16 +73,24 @@ public class StaffPowers extends Plugin {
 	public void defaults() {
 		newDefault("version", curver);
 		newDefault("options.prefix","&8[&dStaff&8]");
+		//OnJoin leave section
+		//TODO add options.onjoinleave.enabled.change to config
+		//TODO add options.onjoinleave.messages.change to config
 		newDefault("options.onjoinleave.enabled.join",true);
 		newDefault("options.onjoinleave.enabled.leave",true);
+		newDefault("options.onjoinleave.enabled.change",true);
 		newDefault("options.onjoinleave.messages.join","&8[&a+&8] (&cStaff&8) &d%player% &ehas joined the network.");
 		newDefault("options.onjoinleave.messages.leave","&8[&c-&8] (&cStaff&8) &d%player% &eleft the network.");
+		newDefault("options.onjoinleave.messages.change","&8[&e*&8]] &8(&cStaff&8) &d%player% &ejoined %server%.");
+		//Make Op
 		newDefault("MakeOp.sendMessageOnAttempt",true);
 		newDefault("MakeOp.message","%prefix% &aAttempting to make operator...");
+		//Messages
 		newDefault("messages.nopermission","prefix% &cYou do not have permission to do this.");
 		newDefault("messages.reloadedConfig","%prefix% &aYou have reloaded the staffpowers (bungee) configuration!");
 		newDefault("messages.playersonly","%prefix% &cOnly players can send this command.");
 		newDefault("messages.wrongargs","%prefix% &cError! Wrong arguements given!");
+		//Make God
 		newDefault("MakeGod.sendMessageOnAttempt",false);
 		newDefault("MakeGod.message","%prefix% &aAttempting to apply god mode.");
 		//Chat section
