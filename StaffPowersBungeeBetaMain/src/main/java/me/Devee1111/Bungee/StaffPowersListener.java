@@ -21,6 +21,14 @@ public class StaffPowersListener  implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PostLoginEvent e) {
 		ProxiedPlayer p = e.getPlayer();
+		
+		//Added 7/28/19 by Devee1111
+		if(StaffSql.playerExists(e.getPlayer()) == false) {
+			StaffSql.newPlayer(p);
+		} else {
+			StaffSql.updateName(p);
+		}
+		
 		if(p.hasPermission("staff.power.onjoinleave.alert")) {
 			if(inst.config.getBoolean("options.onjoinleave.enabled.join") == true) {
 				String message = inst.config.getString("options.onjoinleave.messages.join");

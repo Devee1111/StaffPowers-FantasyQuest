@@ -74,8 +74,6 @@ public class StaffPowers extends Plugin {
 		newDefault("version", curver);
 		newDefault("options.prefix","&8[&dStaff&8]");
 		//OnJoin leave section
-		//TODO add options.onjoinleave.enabled.change to config
-		//TODO add options.onjoinleave.messages.change to config
 		newDefault("options.onjoinleave.enabled.join",true);
 		newDefault("options.onjoinleave.enabled.leave",true);
 		newDefault("options.onjoinleave.enabled.change",true);
