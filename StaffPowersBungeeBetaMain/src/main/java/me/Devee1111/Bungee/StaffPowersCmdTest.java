@@ -17,7 +17,7 @@ public class StaffPowersCmdTest extends Command {
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		if(sender.hasPermission("staff.power.testbungee")) {
-			sender.sendMessage(new TextComponent(ChatColor.GREEN + "Bungee version is active."));
+			sender.sendMessage(new TextComponent(ChatColor.GREEN + "Bungee is active! Version: "+inst.getDescription().getVersion()));
 		} else {
 			inst.sendMessage(sender, "messages.nopermission");
 		}

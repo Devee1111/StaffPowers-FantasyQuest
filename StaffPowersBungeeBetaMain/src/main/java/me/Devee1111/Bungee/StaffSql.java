@@ -18,6 +18,7 @@ public class StaffSql {
 	
 	//Storing variables and such for use
 	private static StaffPowers inst = StaffPowers.getInstance();
+	private static String prefix = "[Staff] ";
 	private static String db = "/data.db";
 	private static String file = ("jdbc:sqlite:"+inst.getDataFolder().getAbsolutePath()+db);
 	
@@ -30,13 +31,13 @@ public class StaffSql {
 	//Globalizing the error for cleaner stacktraces
 	private static void error(SQLException ex, String method) {
 		inst.getLogger().log(Level.SEVERE,"################################################################");
-		inst.getLogger().log(Level.SEVERE,"[Silky] SilkySql has encountered an error. The following was given:");
+		inst.getLogger().log(Level.SEVERE,prefix+"SilkySql has encountered an error. The following was given:");
 		inst.getLogger().log(Level.SEVERE,"---------------------- [ Function ] ----------------------");
 		inst.getLogger().log(Level.SEVERE, method+"()");
 		inst.getLogger().log(Level.SEVERE,"---------------------- [ Stacktrace ] ----------------------");
 		ex.printStackTrace();
 		inst.getLogger().log(Level.SEVERE,"################################################################");
-		inst.getLogger().log(Level.SEVERE,"[Silky] A fatal error has occured while operating the database. Plugin may not function as desired.");
+		inst.getLogger().log(Level.SEVERE,prefix+"A fatal error has occured while operating the database. Plugin may not function as desired.");
 	}
 	
 	// Used for other method to get a connection and adjust file as desired.
@@ -47,6 +48,9 @@ public class StaffSql {
 			conn = DriverManager.getConnection(url);
 		} catch (SQLException ex) {
 			error(ex,"connect");
+		}
+		if(conn == null) {
+			inst.getLogger().log(Level.SEVERE,prefix+"Failed to connect to database file - "+file);
 		}
 		return conn;
 	}
@@ -111,7 +115,7 @@ public class StaffSql {
 			try {
 				File.createNewFile();
 			} catch (IOException ex) {
-				inst.getLogger().log(Level.SEVERE,"[Silky] Error occured creating database file!");
+				inst.getLogger().log(Level.SEVERE,prefix+"Error occured creating database file!");
 				ex.printStackTrace();
 			}
 		}
@@ -119,7 +123,7 @@ public class StaffSql {
 		try {
 			String url = file;
 			conn = DriverManager.getConnection(url);
-			inst.getLogger().log(Level.INFO,"Connection to SQL database has been established.");
+			inst.getLogger().log(Level.INFO,prefix+"Connection to SQL database has been established.");
 			
 		} catch (SQLException ex) {
 			error(ex,"loadSqlFile");

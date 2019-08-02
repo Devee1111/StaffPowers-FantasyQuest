@@ -2,13 +2,14 @@ package me.Devee1111.Bungee;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 
 /*
- * CREATED BY - Devee1111 on 7/20/19
+ * CREATED BY - Devee1111 on 8/2/19
  * purpose - Admin chat (command)
  * Permissions:
  * - staff.chat.admin
@@ -65,10 +66,11 @@ public class StaffPowersCmdAc extends Command {
 		format = inst.prefix(format);
 		format = format.replace("%player%", sender.getName());
 		format = format+message;
+		format = inst.color(format);
 		//converting to text component to send to players
-		TextComponent tosend = new TextComponent(inst.color(format));
+		BaseComponent[] tosend = TextComponent.fromLegacyText(format);
 		//Logging to console as well
-		inst.logChat(inst.color(format+message));
+		inst.logChat(format);
 		//Sending message to online players
 		for(ProxiedPlayer pp : ProxyServer.getInstance().getPlayers()) {
 			if(pp.hasPermission(admin)) {

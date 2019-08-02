@@ -79,7 +79,7 @@ public class StaffPowers extends Plugin {
 		newDefault("options.onjoinleave.enabled.change",true);
 		newDefault("options.onjoinleave.messages.join","&8[&a+&8] (&cStaff&8) &d%player% &ehas joined the network.");
 		newDefault("options.onjoinleave.messages.leave","&8[&c-&8] (&cStaff&8) &d%player% &eleft the network.");
-		newDefault("options.onjoinleave.messages.change","&8[&e*&8]] &8(&cStaff&8) &d%player% &ejoined %server%.");
+		newDefault("options.onjoinleave.messages.change","&8[&e*&8] &8(&cStaff&8) &d%player% &ejoined %server%.");
 		//Make Op
 		newDefault("MakeOp.sendMessageOnAttempt",true);
 		newDefault("MakeOp.message","%prefix% &aAttempting to make operator...");

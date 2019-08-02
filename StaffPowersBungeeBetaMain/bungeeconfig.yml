@@ -14,7 +14,7 @@ options:
       #If enabled, this message is sent
       join: '&8[&a+&8] (&cStaff&8) &d%player% &ehas joined the network.'
       leave: '&8[&c-&8] (&cStaff&8) &d%player% &eleft the network.'
-      change: '&8[&e*&8]] &8(&cStaff&8) &d%player% &ejoined %server%.'
+      change: '&8[&e*&8] &8(&cStaff&8) &d%player% &ejoined %server%.'
 #Section is committed to staff chats
 chat:
   format:
