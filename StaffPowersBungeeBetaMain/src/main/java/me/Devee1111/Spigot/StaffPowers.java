@@ -1,19 +1,31 @@
 package me.Devee1111.Spigot;
 
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import net.milkbowl.vault.permission.Permission;
 
 
 public class StaffPowers extends JavaPlugin {
 	
+	//Hardcoded config versino check - redo default check later
+	double configVersion = 1.2;
+	//Plugin variables
 	public static StaffPowers instance;
 	public FileConfiguration config;
+	//Vault API - Devee 8/6/19
+	private static Permission perms = null;
+	
+	
 	
 	//Our datas
 	private HashMap<String, String> dataGod = new HashMap<>();
@@ -23,15 +35,20 @@ public class StaffPowers extends JavaPlugin {
 		//TODO - Redo the config function, Version detection from default
 		saveDefaultConfig();
 		config = getConfig();
-		if(config.getDouble("version") != 1.1) {
+		if(config.getDouble("version") != configVersion) {
+			//TODO say we're resetting config
 			saveResource("config.yml", true);
 		}
 		
 		//Creating our instance
 		setInstance(this);
 		
+		//Setting up our Vault API
+		setupPermissions();
+		
 		//Creating our Command classes
 		getCommand("testspigot").setExecutor(new StaffCmdTest(this));;
+		getCommand("staffreloadspigot").setExecutor(new StaffCmdReload(this));
 		
 		//Creating our Listener Class
 		PluginManager pm = getServer().getPluginManager();
@@ -45,6 +62,29 @@ public class StaffPowers extends JavaPlugin {
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "staff:powers");
 		this.getServer().getMessenger().registerIncomingPluginChannel(this, "staff:powers", new StaffPowersPluginMessageListener());
 		
+	}
+	
+	/*
+	 * SECTION - VAULT API
+	 * Created by - Devee1111 on 8/6/19
+	 */
+	
+	public void giveRank(String uuid, String rank) {
+		perms.playerAddGroup(null, Bukkit.getOfflinePlayer(UUID.fromString(uuid)), rank);
+	}
+	
+	public void takeRank(String uuid, String rank) {
+		perms.playerRemoveGroup(null, Bukkit.getOfflinePlayer(UUID.fromString(uuid)), rank);
+	}
+	
+	private boolean setupPermissions() {
+		if(getServer().getPluginManager().getPlugin("Vault") == null) {
+			return false;
+			//TODO inform that vault isn't active
+		}
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        perms = rsp.getProvider();
+        return perms != null;
 	}
 	
 	/*

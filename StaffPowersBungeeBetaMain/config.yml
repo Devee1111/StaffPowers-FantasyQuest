@@ -1,5 +1,5 @@
 #Do not touch this
-version: 1.1
+version: 1.2
 options:
   #The prefix that will be shown throughout the plugin, and in the %prefix% placeholders
   prefix: "&8[&dStaff&8]"
@@ -21,7 +21,16 @@ options:
     messageToEveryone: "&d%player% refuses to fall..."
     #If the killer was a player, send this message
     messageToAttacker: "&cDid you really think you could slay a god %player%...? You...?"
-    
+#Added in 1.2, staff ranks of the network
+#The left side is the plugin message that will always be sent, the right is the real rank on the spigot server
+ranks:
+  gamemaster: 'GameMaster'
+  gameengineer: 'GameEngineer'
+  dungeonmaster: 'DungeonMaster'
+  gamemanager: 'GameManager'
+  gamekeeper: 'GameKeeper'
+  gamearchitect: 'GameArchitect'
+  
 messages:
   #Displayed when made an operator with /opme. Placeholders: %prefix%
   madeOp: "%prefix% &aYou've been made a server operator."
@@ -37,3 +46,5 @@ messages:
   alreadyOp: "%prefix% &cYou are already an operator."
   #This is always be displayed when a user is denied permission spigotside. Placeholders: %prefix%
   nopermission: '&cYou do not have permission to do this.'
+  #Called when configuraiton is reloaded
+  reloadedConfig: "%prefix% &aYou have reloaded the config."

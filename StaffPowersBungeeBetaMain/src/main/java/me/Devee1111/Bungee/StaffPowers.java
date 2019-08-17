@@ -7,11 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
+import me.lucko.luckperms.LuckPerms;
+import me.lucko.luckperms.api.LuckPermsApi;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -27,6 +30,8 @@ public class StaffPowers extends Plugin {
 	public Configuration config;
 	private double version;
 	private double curver;
+	//Creating API object
+	private LuckPermsApi luckperms;
 	//Storing data for other classes
 	HashMap<String, String> chat = new HashMap<String, String>();
 	
@@ -34,6 +39,11 @@ public class StaffPowers extends Plugin {
 	public void onEnable() {
 		//creating out instance
 		setInstance(this);
+		
+		//Setting up luck perms API
+		if(!setupLuckPerms()) {
+			failedLuckApi();
+		}
 		
 		//Loading our configuration file
 		loadConfig();
@@ -43,7 +53,7 @@ public class StaffPowers extends Plugin {
 		
 		//Setting up our SQL data
 		StaffSql.loadSqlFile();
-		
+
 		//Clearing our data on plugin startup
 		chat.clear();
 		
@@ -59,11 +69,16 @@ public class StaffPowers extends Plugin {
 		//Newly created (no redo should be needed)
 		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdSc());
 		getProxy().getPluginManager().registerCommand(this, new StaffPowersCmdAc());
+		//TODO finish writing demote
+		getProxy().getPluginManager().registerCommand(this, new StaffCmdDemote());
+		getProxy().getPluginManager().registerCommand(this, new StaffCmdOnduty());
+		getProxy().getPluginManager().registerCommand(this, new StaffCmdOffduty());
 		
 		//Creating our Listener TODO this listener needs to be redone
 		getProxy().getPluginManager().registerListener(this, new StaffPowersListener());
 		//Listeners past this point are up to date
 		getProxy().getPluginManager().registerListener(this, new StaffPowersLsnChat());
+		getProxy().getPluginManager().registerListener(this, new StaffLsnRankSync());
 		
 	}
 	
@@ -77,9 +92,9 @@ public class StaffPowers extends Plugin {
 		newDefault("options.onjoinleave.enabled.join",true);
 		newDefault("options.onjoinleave.enabled.leave",true);
 		newDefault("options.onjoinleave.enabled.change",true);
-		newDefault("options.onjoinleave.messages.join","&8[&a+&8] (&cStaff&8) &d%player% &ehas joined the network.");
+		newDefault("options.onjoinleave.messages.join","&8[&a+&8] (&cStaff&8) &d%player% &ehas joined &a%server%&e.");
 		newDefault("options.onjoinleave.messages.leave","&8[&c-&8] (&cStaff&8) &d%player% &eleft the network.");
-		newDefault("options.onjoinleave.messages.change","&8[&e*&8] &8(&cStaff&8) &d%player% &ejoined %server%.");
+		newDefault("options.onjoinleave.messages.change","&8[&e*&8] &8(&cStaff&8) &d%player% &eswitched to &a%server%&e.");
 		//Make Op
 		newDefault("MakeOp.sendMessageOnAttempt",true);
 		newDefault("MakeOp.message","%prefix% &aAttempting to make operator...");
@@ -100,8 +115,65 @@ public class StaffPowers extends Plugin {
 		newDefault("chat.messages.toggled-off.admin","%prefix% &3Admin chat &cdisabled&3.");
 		newDefault("chat.messages.playersonly","%prefix% &cOnly players can toggle chat.");
 		newDefault("chat.messages.nopermtoggle","%prefix% &cYou do not have permission to toggle the staff chat.");
-		//new yml changes go here
+		//TODO add rank priority here
+		//TODO add staff on duty / off messages here
 	}
+	
+	/*
+	 * SECTION: LuckPermsAPI
+	 * Created by - Devee1111 on 8/5/19
+	 */
+	
+	public void failedLuckApi() {
+		getLogger().log(Level.SEVERE,"##################################");
+		getLogger().log(Level.SEVERE,"#                                #");
+		getLogger().log(Level.SEVERE,"#          ERROR REPORT          #");
+		getLogger().log(Level.SEVERE,"#                                #");
+		getLogger().log(Level.SEVERE,"#          > Details <           #");
+		getLogger().log(Level.SEVERE,"#-> FAILED TO LOAD LUCKPERMS API #");
+		getLogger().log(Level.SEVERE,"#                                #");
+		getLogger().log(Level.SEVERE,"##################################");
+	}
+	
+	public boolean setupLuckPerms() {
+		try {
+			//Gets the API loaded before it's used, and get's it ready.
+			luckperms = LuckPerms.getApi();
+			return true;
+		} catch(IllegalStateException ex) {
+			luckperms = null;
+			return false;
+		}
+	}
+	
+	public LuckPermsApi getLuckApi() {
+		return luckperms;
+	}
+	
+	public String getRank(String uuid) {
+		String rank = "default";
+		if(luckperms != null) {
+			rank = luckperms.getUser(UUID.fromString(uuid)).getPrimaryGroup();
+		}
+		//TODO include priority system for multigrouped players
+		return rank;
+	}
+	
+	public Boolean getDutyStatus(String uuid) {
+		return(StaffSql.onDuty(uuid));
+	}
+	//TODO setup off duty perms
+	public String getRealRank(String uuid) {
+		String rank = "";
+		if(luckperms != null) {
+			rank = luckperms.getUser(UUID.fromString(uuid)).getPrimaryGroup();
+			if(StaffSql.onDuty(uuid)) {
+			//	rank = rank + "od";
+			}
+		}
+		return rank;
+	}
+	
 	
 	/*
 	 * SECTION: Staff chat <Data>
@@ -110,7 +182,6 @@ public class StaffPowers extends Plugin {
 	 * - Channels: general, admin
 	 * - Permisssions are in classes
 	 */
-	//chanels
 	String general = "general";
 	String admin = "admin";
 	
@@ -238,6 +309,9 @@ public class StaffPowers extends Plugin {
 	 * Message modification / Shortcuts - Methods designed to make messages easier
 	 */
 	public String createMessage(String path) {
+		if(!config.contains(path)) {
+			configError(path,"createMessage");
+		}
 		String tosend = config.getString(path);
 		tosend = prefix(tosend);
 		tosend = ChatColor.translateAlternateColorCodes('&', tosend);
@@ -306,6 +380,14 @@ public class StaffPowers extends Plugin {
 		p.getServer().sendData("staff:powers", out.toByteArray());
 	}
 	
+	public void sendRankMessage(ProxiedPlayer pp, String rank) {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("GiveRank");
+		out.writeUTF(pp.getUniqueId().toString());
+		out.writeUTF(rank);
+		pp.getServer().sendData("staff:powers",out.toByteArray());
+	}
+	
 	public void log(String message) {
 		getLogger().log(Level.WARNING, message);
 	}
@@ -321,14 +403,15 @@ public class StaffPowers extends Plugin {
 	
 	//Message to console with clear instructions && warnings
 	public void alertDevelopment() {
+		//56 spaces between each # in empty lines
 		getLogger().log(Level.INFO,"##########################################################");
 		getLogger().log(Level.INFO,"#                                                        #");
-		getLogger().log(Level.INFO,"#                                                        #");
+		getLogger().log(Level.INFO,"#                    > Staff Powers <                    #");
 		getLogger().log(Level.INFO,"# Be aware this plugin is still under heavy development! #");
 		getLogger().log(Level.INFO,"# Please also install this plugin on all spigot servers  #");
 		getLogger().log(Level.INFO,"# connected for it to fully work and keep it up to date  #");
 		getLogger().log(Level.INFO,"# with the latest jar file found withen the bungee ftp.  #");
-		getLogger().log(Level.INFO,"#                                                        #");
+		getLogger().log(Level.INFO,"#                       - Daddy Dev                      #");
 		getLogger().log(Level.INFO,"#                                                        #");
 		getLogger().log(Level.INFO,"##########################################################");
 	}

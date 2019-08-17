@@ -5,7 +5,8 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -13,7 +14,6 @@ import net.md_5.bungee.event.EventHandler;
 public class StaffPowersListener  implements Listener {
 	
 /*
- * Created by - Devee1111 on ?
  * Recoded by - Devee1111 on 8/2/19
  */
 	
@@ -22,7 +22,7 @@ public class StaffPowersListener  implements Listener {
 	private String justjoined = "";
 	
 	@EventHandler
-	public void onPlayerJoin(PostLoginEvent e) {
+	public void onPlayerJoin(ServerConnectEvent e) {
 		if(!e.getPlayer().hasPermission("staff.power.onjoinleave.alert")) {
 			return;
 		}
@@ -30,10 +30,15 @@ public class StaffPowersListener  implements Listener {
 			return;
 		}
 		
+		if(!(e.getReason().equals(Reason.JOIN_PROXY))) {
+			return;
+		}
+		
 		justjoined = e.getPlayer().getName();
 
 		String message = inst.config.getString("options.onjoinleave.messages.join");
 		message = message.replace("%player%", e.getPlayer().getName());
+		message = message.replace("%server%", e.getTarget().getName());
 		for(ProxiedPlayer online : ProxyServer.getInstance().getPlayers()) {
 			if(online.hasPermission("staff.power.onjoinleave.notify")) {
 				online.sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', message)));
@@ -42,7 +47,7 @@ public class StaffPowersListener  implements Listener {
 
 		
 		//Storing for playerdata 
-		if(StaffSql.playerExists(e.getPlayer()) == false) {
+		if(StaffSql.playerExists(e.getPlayer().getUniqueId().toString()) == false) {
 			StaffSql.newPlayer(e.getPlayer());
 		} else {
 			StaffSql.updateName(e.getPlayer());
@@ -72,7 +77,7 @@ public class StaffPowersListener  implements Listener {
 		if(!e.getPlayer().hasPermission("staff.power.onjoinleave.alert")) {
 			return;
 		}
-		if(!inst.config.getBoolean("options.onjoinleave.enabled.change") == true) {
+		if(inst.config.getBoolean("options.onjoinleave.enabled.change") == false) {
 			return;
 		}
 		if(justjoined.equals(e.getPlayer().getName())) {
@@ -82,7 +87,7 @@ public class StaffPowersListener  implements Listener {
 
 		String tomake = inst.config.getString("options.onjoinleave.messages.change");
 		tomake = tomake.replace("%player%", e.getPlayer().getName());
-		tomake = tomake.replace("%server%", e.getPlayer().getServer().getInfo().getName());
+		tomake = tomake.replace("%server%", e.getServer().getInfo().getName());
 		tomake = ChatColor.translateAlternateColorCodes('&', tomake);
 		TextComponent tosend = new TextComponent(tomake);
 		

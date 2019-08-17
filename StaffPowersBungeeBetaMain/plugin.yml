@@ -5,4 +5,6 @@ author: Devee1111
 commands:
   testspigot:
     description: This is just a little test to see if it's active.
+  staffreloadspigot:
+    description: Reload the staff plugin in current spigot server.
     

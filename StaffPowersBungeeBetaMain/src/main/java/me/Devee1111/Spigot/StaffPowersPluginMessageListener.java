@@ -28,6 +28,7 @@ public class StaffPowersPluginMessageListener  implements PluginMessageListener 
 		if(!channel.equals("staff:powers")) {
 			return;
 		}
+		
 		//Simplify the data
 		ByteArrayDataInput input = ByteStreams.newDataInput(message);
 		String subchannel = input.readUTF();
@@ -66,9 +67,39 @@ public class StaffPowersPluginMessageListener  implements PluginMessageListener 
 			
 		}
 		
-		//TODO add more commands
+		if(subchannel.equals("GiveRank")) {
+			String player = input.readUTF();
+			String rank = input.readUTF();
+			if(!rank.equalsIgnoreCase("default")) {
+				inst.giveRank(player, inst.getConfig().getString("ranks."+rank));
+			} else {
+				for(String key : inst.getConfig().getConfigurationSection("ranks").getKeys(false)) {
+					inst.takeRank(player, inst.getConfig().getString("ranks."+key));
+				}
+				return;
+			}
+		}
+		
+		if(subchannel.equals("TakeRank")) {
+			String player = input.readUTF();
+			String rank = input.readUTF();
+			if(rank.equals("default")) {
+				for(String key : inst.getConfig().getConfigurationSection("ranks").getKeys(false)) {
+					inst.takeRank(player, inst.getConfig().getString("ranks."+key));
+				}
+				return;
+			}
+			inst.takeRank(player, rank);
+		}
+		
 		
 	}
+	
+	
+	/*
+	 * Section - x
+	 * Created by - Devee1111 on ?
+	 */
 	
 	public void setGod(Player p) {
 		if(inst.isGod(p)) {

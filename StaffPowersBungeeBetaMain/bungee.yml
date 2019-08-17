@@ -1,4 +1,5 @@
 name: Staff
 version: 1.3
+depends: [SQLiteBungeecord, LuckPerms]
 main: me.Devee1111.Bungee.StaffPowers
 author: Devee1111

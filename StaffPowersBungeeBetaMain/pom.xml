@@ -15,7 +15,6 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
-
     <build>
         <plugins>
             <plugin>

@@ -56,16 +56,51 @@ public class StaffSql {
 	}
 	
 	/*
+	 * Section - PlayerDataChecks 
+	 * Created by - Devee1111 on 8/6/19
+	 */
+	
+	public static void setDuty(String uuid, boolean status) {
+		String sql = "update playerdata set onduty = ? where uuid = ?;";
+		
+		try {
+			Connection con = connect();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setBoolean(1,status);
+			ps.setString(2,uuid);
+			ps.executeUpdate();
+			ps.close();
+			con.close();
+		} catch(SQLException ex) { error(ex,"setDuty"); }
+	}
+	
+	public static boolean onDuty(String uuid) {
+		boolean onduty = false;
+		String sql = "select onduty from playerdata where uuid = ?;";
+		try {
+			Connection con = connect();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,uuid);
+			ResultSet rs = ps.executeQuery();
+			onduty = rs.getBoolean(1);
+			rs.close();
+			ps.close();
+			con.close();
+		} catch (SQLException ex) { error(ex,"onDuty"); }
+		return onduty;
+	}
+	
+	/*
 	 * Section is to ensure playerdata is stored
 	 */
 	
-	public static boolean playerExists(ProxiedPlayer p) {
+	public static boolean playerExists(String uuid) {
 		boolean exists = false;
 		String sql = "select * from playerdata where uuid = ?;";
 		try {
 			Connection con = connect();
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, p.getUniqueId().toString());
+			ps.setString(1, uuid);
 			ResultSet rs = ps.executeQuery();
 			if(rs.isBeforeFirst()) {
 				exists = true;
@@ -85,7 +120,7 @@ public class StaffSql {
 			ps.setString(1, p.getUniqueId().toString());
 			ps.setString(2, p.getName());
 			ps.setBoolean(3, false);
-			ps.setBoolean(4, false);
+			ps.setBoolean(4, true);
 			ps.executeUpdate();
 			ps.close();
 			con.close();
@@ -110,6 +145,12 @@ public class StaffSql {
 	
 	/* This is called onEnabled(), it makes sure we have a file, and that the file is working. */
 	public static void loadSqlFile() {
+		//Loading Drivers for bungee
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			//TODO announce failed to load drivers
+		}
 		File File = new File(inst.getDataFolder().getAbsolutePath()+db);
 		if(!File.exists()) {
 			try {
@@ -141,7 +182,7 @@ public class StaffSql {
 	/* Method designed for loadSql, it ensures our main data table is created */
 	public static void createPlayerData() {
 		String url = file;
-		String sql = "create table if not exists playerdata(\"uuid\" text, \"ign\" text, \"vanished\" boolean, \"onduty\" boolean);";
+		String sql = "create table if not exists playerdata(\"uuid\" text, \"ign\" text,\"searchign\" text, \"vanished\" boolean, \"onduty\" boolean);";
 		try {
 			Connection conn = DriverManager.getConnection(url);
 			Statement stat = conn.createStatement();
