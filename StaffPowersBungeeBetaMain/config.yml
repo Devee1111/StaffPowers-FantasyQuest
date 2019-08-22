@@ -1,8 +1,10 @@
 #Do not touch this
-version: 1.2
+version: 1.3
 options:
   #The prefix that will be shown throughout the plugin, and in the %prefix% placeholders
   prefix: "&8[&dStaff&8]"
+  #Do we hook into essentials API and enable features?
+  essentials: true
   #Settings for when player is in staff godmode
   god:
     #What we disable for gods
@@ -21,6 +23,12 @@ options:
     messageToEveryone: "&d%player% refuses to fall..."
     #If the killer was a player, send this message
     messageToAttacker: "&cDid you really think you could slay a god %player%...? You...?"
+#Added in 1.3, when essentials in enabled
+essentials:
+  #Do we put afk staff into vanish?
+  vanishAfkStaff: true
+  #Do we disable chest open animations for vanished players?
+  silentChestStaff: true
 #Added in 1.2, staff ranks of the network
 #The left side is the plugin message that will always be sent, the right is the real rank on the spigot server
 ranks:

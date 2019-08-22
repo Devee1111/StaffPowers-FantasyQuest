@@ -18,7 +18,7 @@ import net.milkbowl.vault.permission.Permission;
 public class StaffPowers extends JavaPlugin {
 	
 	//Hardcoded config versino check - redo default check later
-	double configVersion = 1.2;
+	double configVersion = 1.3;
 	//Plugin variables
 	public static StaffPowers instance;
 	public FileConfiguration config;
@@ -46,6 +46,7 @@ public class StaffPowers extends JavaPlugin {
 		//Setting up our Vault API
 		setupPermissions();
 		
+		
 		//Creating our Command classes
 		getCommand("testspigot").setExecutor(new StaffCmdTest(this));;
 		getCommand("staffreloadspigot").setExecutor(new StaffCmdReload(this));
@@ -53,6 +54,9 @@ public class StaffPowers extends JavaPlugin {
 		//Creating our Listener Class
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new StaffPowersLsnGod(this), this);
+		if(config.getBoolean("options.essentials") == true) {
+			pm.registerEvents(new StaffLsnAfk(this), this);
+		}
 		
 		//TODO Clear out data on restart
 		dataGod.clear();
@@ -67,7 +71,18 @@ public class StaffPowers extends JavaPlugin {
 	/*
 	 * SECTION - VAULT API
 	 * Created by - Devee1111 on 8/6/19
+	 * Adjusted - 8/21/19 by Devee1111
 	 */
+	
+	//Adjusted
+	public boolean hasRank(String rank, Player p) {
+		for(String r : perms.getPlayerGroups(p)) {
+			if(r.equals(rank)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public void giveRank(String uuid, String rank) {
 		perms.playerAddGroup(null, Bukkit.getOfflinePlayer(UUID.fromString(uuid)), rank);
